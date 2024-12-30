@@ -6,13 +6,18 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.*
+import androidx.compose.material.Card
+import androidx.compose.material.ContentAlpha
+import androidx.compose.material.LocalContentAlpha
+import androidx.compose.material.LocalContentColor
+import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import kr.co.fastcampus.part4.chapter5_4.ui.theme.CompositionLocalTheme
@@ -34,6 +39,7 @@ class MainActivity : ComponentActivity() {
 }
 
 // 단계 4: `compositionLocalOf`에 `8.dp`를 넣어 `LocalElevation`을 할당합니다.
+val LocalElevation = compositionLocalOf { 8.dp }
 
 @Composable
 fun Greeting() {
@@ -52,20 +58,32 @@ fun Greeting() {
 
     // 단계 6: LocalElevation의 값을 `CompositionLocalProvider`로
     // 바꾸어 봅시다.
-    Card(
-        modifier = Modifier.padding(8.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(16.dp),
+
+    CompositionLocalProvider(LocalElevation provides 12.dp) {
+        Card(
+            modifier = Modifier.padding(8.dp),
+            elevation = LocalElevation.current
         ) {
-            Text("안녕하세요. 패스트캠퍼스")
-            Text("스안녕하세요. 패스트캠퍼")
-            Text("퍼스안녕하세요. 패스트캠")
-            Text("캠퍼스안녕하세요. 패스트")
-            Text("트캠퍼스안녕하세요. 패스")
-            Text("스트캠퍼스안녕하세요. 패")
-            Text("패스트캠퍼스안녕하세요.")
-            // 단계 3: `LocalContext.current`의 `resources`를 출력해보세요.
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.disabled) {
+                Column(
+                    modifier = Modifier.padding(16.dp),
+                ) {
+                    Text("안녕하세요. 패스트캠퍼스")
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.high) {
+                        Text("스안녕하세요. 패스트캠퍼")
+                        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                            Text("퍼스안녕하세요. 패스트캠")
+                        }
+                        CompositionLocalProvider(LocalContentColor provides Color.Magenta) {
+                            Text("캠퍼스안녕하세요. 패스트")
+                            Text("트캠퍼스안녕하세요. 패스")
+                        }
+                    }
+                    Text("스트캠퍼스안녕하세요. 패")
+                    Text("패스트캠퍼스안녕하세요.")
+                    // 단계 3: `LocalContext.current`의 `resources`를 출력해보세요.
+                }
+            }
         }
     }
 }
