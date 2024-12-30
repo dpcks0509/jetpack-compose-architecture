@@ -4,15 +4,20 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import kr.co.fastcampus.part4.chapter5_9.PokeAPI
-import kr.co.fastcampus.part4.chapter5_9.Response
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
+import androidx.paging.PagingSource
+import androidx.paging.PagingState
+import androidx.paging.cachedIn
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kr.co.fastcampus.part4.chapter5_9.PokeAPI
 import kr.co.fastcampus.part4.chapter5_9.PokemonResponse
+import kr.co.fastcampus.part4.chapter5_9.Response
 import javax.inject.Inject
 
 @HiltViewModel
@@ -51,8 +56,10 @@ class PokemonViewModel @Inject constructor(
                         // `prevKey`와 `nextKey`를 만들어 전달하자.
                         return LoadResult.Page(
                             data = pokemons.results,
-                            prevKey = null,
-                            nextKey = null
+                            prevKey = pokemons.previous?.substringAfter("offset")
+                                ?.substringBefore("&")?.toInt(),
+                            nextKey = pokemons.next?.substringAfter("offset")
+                                ?.substringBefore("&")?.toInt()
                         )
                     } catch (e: Exception) {
                         Log.e("EEE", "error: $e")
